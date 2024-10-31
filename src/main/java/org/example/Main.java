@@ -7,10 +7,7 @@ import java.util.Scanner;
 import java.util.List;
 
 public class Main {
-
-
     public static void main(String[] args) {
-
         buyVehicleMenu();
     }
 
@@ -18,6 +15,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Customer customer = new Customer();
         Vehicles vehicles = new Vehicles();
+        vehicles.addVehicles();
         String name, address, age, type;
         while (true) {
             System.out.println("Welcome to vehicle shop");
@@ -85,7 +83,7 @@ class Vehicles {
     Scanner scanner = new Scanner(System.in);
     Customer customer = new Customer();
 
-    Vehicles() {
+    public void addVehicles() {
         Vehicles car = new Vehicles();
         Vehicles truck = new Vehicles();
         Vehicles motorCycle = new Vehicles();
@@ -108,8 +106,8 @@ class Vehicles {
         vehiclesToRent.add(car);
         vehiclesToRent.add(truck);
         vehiclesToRent.add(motorCycle);
-
     }
+
 
     public String getLicensePlate() {
         return licensePlate;
