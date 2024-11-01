@@ -8,19 +8,46 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        Vehicles car = new Vehicles();
+        VehiclesList Instance = VehiclesList.getInstance();
+        Vehicles truck = new Vehicles();
+        Vehicles motorCycle = new Vehicles();
+
+        car.setName("Honda");
+        car.setColour("blue");
+        car.setLicensePlate("87787");
+        car.setVehicleType("car");
+        car.setPricePerDay(9500000);
+        Instance.addVehicles(car);
+
+        truck.setVehicleType("truck");
+        truck.setName("FUSO");
+        truck.setColour("Black");
+        truck.setLicensePlate("898765");
+        truck.setPricePerDay(250000);
+        Instance.addVehicles(truck);
+
+
+        motorCycle.setVehicleType("Motocycle");
+        motorCycle.setName("BMW");
+        motorCycle.setColour("WHITE");
+        motorCycle.setLicensePlate("453367");
+        motorCycle.setPricePerDay(4500000);
+        Instance.addVehicles(motorCycle);
+
         buyVehicleMenu();
     }
 
     public static void buyVehicleMenu() {
         Scanner scanner = new Scanner(System.in);
         Customer customer = new Customer();
-        Vehicles vehicles = new Vehicles();
-        vehicles.addVehicles();
+//        Vehicles vehicles = Vehicles.getInstance();
+        VehiclesList Instance = VehiclesList.getInstance();
         String name, address, age, type;
         while (true) {
             System.out.println("Welcome to vehicle shop");
             System.out.println("Please choose from the list");
-            vehicles.listVehicles();
+            Instance.listVehicles();
             System.out.println();
             System.out.print("Name: ");
             name = scanner.nextLine();
@@ -36,8 +63,8 @@ public class Main {
             System.out.println();
             System.out.print("Vehicle type: ");
             type = scanner.nextLine();
-            if (vehicles.vehicleExist(type)) {
-                vehicles.saveCustomer(customer, type);
+            if (Instance.vehicleExist(type)) {
+                Instance.saveCustomer(customer, type);
             } else {
                 System.out.println("vehicle not available");
                 break;
@@ -75,38 +102,68 @@ class Customer {
     }
 }
 
+class VehiclesList {
+    List<Vehicles> vehiclesToRent;
+    Map<String, Vehicles> vehiclesList;
+    private static VehiclesList Instance;
+
+    private VehiclesList() {
+        vehiclesToRent = new ArrayList<>();
+        vehiclesList = new HashMap<>();
+    }
+
+    public static VehiclesList getInstance() {
+        if (Instance != null) {
+            return Instance;
+        }
+        Instance = new VehiclesList();
+        return Instance;
+    }
+
+    public void addVehicles(Vehicles vehicle) {
+        vehiclesToRent.add(vehicle);
+    }
+
+    public boolean vehicleExist(String type) {
+        for (Vehicles vehicle : vehiclesToRent) {
+            if (vehicle.getVehicleType().equals(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Vehicles BuyVehicle(String type) {
+        for (Vehicles vehicle : vehiclesToRent) {
+            if (vehicle.getVehicleType().equals(type)) {
+                return vehicle;
+            }
+        }
+        return null;
+    }
+
+    public void listVehicles() {
+        for(int i = 0; i < vehiclesToRent.size(); i++) {
+            Vehicles vehicle = vehiclesToRent.get(i);
+            System.out.println(i + " - " + vehicle.getName());
+            System.out.println("Type - " + vehicle.getVehicleType());
+            System.out.println("Rent Price -  " + vehicle.getPricePerDay());
+            System.out.println("Colour - " + vehicle.getColour());
+            System.out.println("License Plate - " + vehicle.getLicensePlate());
+//            System.out.println("1 - " + vehicle.get());
+            System.out.println("==========================");
+        }
+    }
+
+    public void saveCustomer(Customer customer, String type) {
+        this.vehiclesList.put(customer.getName(), BuyVehicle(type));
+        System.out.println("Vehicle rented successfully 😊");
+    }
+}
+
 class Vehicles {
     private String licensePlate, colour, name, vehicleType;
     private double pricePerDay;
-    List<Vehicles> vehiclesToRent = new ArrayList<>();
-    Map<String, Vehicles> vehiclesList = new HashMap<>();
-    Scanner scanner = new Scanner(System.in);
-    Customer customer = new Customer();
-
-    public void addVehicles() {
-        Vehicles car = new Vehicles();
-        Vehicles truck = new Vehicles();
-        Vehicles motorCycle = new Vehicles();
-
-        car.setName("Honda");
-        car.setColour("blue");
-        car.setLicensePlate("87787");
-        car.setVehicleType("car");
-
-        truck.setVehicleType("truck");
-        truck.setName("FUSO");
-        truck.setColour("Black");
-        truck.setLicensePlate("898765");
-
-        motorCycle.setVehicleType("truck");
-        motorCycle.setName("FUSO");
-        motorCycle.setColour("Black");
-        motorCycle.setLicensePlate("898765");
-
-        vehiclesToRent.add(car);
-        vehiclesToRent.add(truck);
-        vehiclesToRent.add(motorCycle);
-    }
 
 
     public String getLicensePlate() {
@@ -149,37 +206,7 @@ class Vehicles {
         return vehicleType;
     }
 
-    public boolean vehicleExist(String type) {
-        for (Vehicles vehicle : vehiclesToRent) {
-            if (vehicle.getVehicleType().equals(type)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    public Vehicles BuyVehicle(String type) {
-        for (Vehicles vehicle : vehiclesToRent) {
-            if (vehicle.getVehicleType().equals(type)) {
-                return vehicle;
-            }
-        }
-        return null;
-    }
-
-    public void listVehicles() {
-        for(Vehicles vehicle : vehiclesToRent) {
-            System.out.println("1 - " + vehicle.getName());
-            System.out.println("1 -  " + vehicle.getPricePerDay());
-            System.out.println("1 - " + vehicle.getColour());
-            System.out.println("==========================");
-        }
-    }
-
-    public void saveCustomer(Customer customer, String type) {
-        this.vehiclesList.put(customer.getName(), BuyVehicle(type));
-        System.out.println("Vehicle rented successfully 😊");
-    }
 }
 
 //cars, trucks and motorcycles
